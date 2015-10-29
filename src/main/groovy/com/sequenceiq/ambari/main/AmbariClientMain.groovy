@@ -21,7 +21,7 @@ import com.sequenceiq.ambari.client.AmbariClient
 
 class AmbariClientMain {
   public static void main(String[] args) {
-    def host = 'localhost'
+    def host = '54.152.24.207'
     def port = '8080'
     if (args.size == 2) {
       host = args[0]

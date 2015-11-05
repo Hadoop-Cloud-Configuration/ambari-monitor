@@ -23,7 +23,6 @@ import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
-import static CommonService.PAD
 
 @Slf4j
 trait ServiceAndHostService extends ClusterService {

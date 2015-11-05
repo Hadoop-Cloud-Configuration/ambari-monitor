@@ -17,8 +17,6 @@
  */
 package com.sequenceiq.ambari.client.services
 
-import com.sequenceiq.ambari.client.AmbariBlueprintsTest;
-
 import groovy.util.logging.Slf4j
 
 @Slf4j

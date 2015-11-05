@@ -23,7 +23,6 @@ import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import groovyx.net.http.ContentType
 import groovyx.net.http.HttpResponseException
-import static CommonService.PAD
 
 @Slf4j
 trait ServiceAndHostService extends ClusterService {
@@ -318,7 +317,7 @@ trait ServiceAndHostService extends ClusterService {
 			String disk_info_percentage1 = it.Hosts.disk_info.percent[0];
 			String disk_info_percentage2 = it.Hosts.disk_info.percent[1];
 			System.out.println(disk_info_percentage1);
-			"$name_alias $ip $disk_info_percentage1 $disk_info_percentage2"
+			"$disk_info_percentage1 $disk_info_percentage2"
 		}.join('\n')
 	}
 

@@ -12,6 +12,7 @@ public class ScalingEvent extends ApplicationEvent {
 
     public ScalingEvent(ScalingType scalingType){
         super(scalingType);
+    	System.out.println(scalingType);
         this.scalingType =  scalingType;
     }
 

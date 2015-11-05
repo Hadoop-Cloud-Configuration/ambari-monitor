@@ -17,14 +17,16 @@
  */
 package com.sequenceiq.ambari.client;
 
+import com.sequenceiq.ambari.scaling.monitor.MetricsMonitor;
+
 /**
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
-        System.out.println( "Hello World!" );
-    }
+public class App {
+	public static void main(String[] args) throws InterruptedException {
+		MetricsMonitor monitor = new MetricsMonitor("52.91.191.43", "8080");
+		monitor.valid();
+		System.out.println("Hello World!");
+	}
 }

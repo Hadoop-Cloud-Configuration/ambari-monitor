@@ -20,27 +20,27 @@ package com.sequenceiq.ambari.main
 import com.sequenceiq.ambari.client.AmbariClient
 
 class AmbariClientMain {
-  public static void main(String[] args) {
-    def host = '54.172.117.195'
-    def port = '8080'
-    if (args.size == 2) {
-      host = args[0]
-      port = args[1]
-    }
+	public static void main(String[] args) {
+		def host = '54.172.117.195'
+		def port = '8080'
+		if (args.size == 2) {
+			host = args[0]
+			port = args[1]
+		}
 
-    AmbariClient client = new AmbariClient(host, port,"admin","admin")
-	
-    println "\n  clusterList: \n${client.showClusterList()}"
-//    println "\n  healthCheck: \n ${client.getHostsMonitor()}"
-//    println "\n  hostsList: \n${client.showHostList()}"
-	String temp = client.showHostDiskInfo();
-  	println "\n Hosts Disk Info: \n${temp}"
-	  String t = client.getYarnData();
-	  println "\n Available Memory: \n${t}MB"
-   // println "\n  tasksList: \n${client.showTaskList()}"
-   // println "\n  serviceList: \n${client.showServiceList()}"
-   // println "\n  blueprintList: \n${client.showBlueprints()}"
-   // println "\n  clusterBlueprint: \n${client.showClusterBlueprint()}"
+		AmbariClient client = new AmbariClient(host, port,"admin","admin")
 
-  }
+		println "\n  clusterList: \n${client.showClusterList()}"
+		//    println "\n  healthCheck: \n ${client.getHostsMonitor()}"
+		//    println "\n  hostsList: \n${client.showHostList()}"
+		String temp = client.showHostDiskInfo();
+		println "\n Hosts Disk Info: \n${temp}"
+		String t = client.getYarnData();
+		println "\n Available Memory: \n${t}MB"
+		// println "\n  tasksList: \n${client.showTaskList()}"
+		// println "\n  serviceList: \n${client.showServiceList()}"
+		// println "\n  blueprintList: \n${client.showBlueprints()}"
+		// println "\n  clusterBlueprint: \n${client.showClusterBlueprint()}"
+
+	}
 }

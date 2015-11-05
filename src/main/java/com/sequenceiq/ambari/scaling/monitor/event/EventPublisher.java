@@ -7,5 +7,5 @@ package com.sequenceiq.ambari.scaling.monitor.event;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
-public interface EventPublisher extends ApplicationEventPublisher, ApplicationEventPublisherAware, Runnable {
+public interface EventPublisher extends ApplicationEventPublisher, ApplicationEventPublisherAware {
 }

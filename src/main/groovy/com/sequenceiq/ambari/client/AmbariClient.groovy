@@ -119,11 +119,14 @@ class AmbariClient implements AlertService,MonitorService, BlueprintService, Con
   }
 
   def String getYarnData() {
-		def result = [:]
 		def response = utils.slurp("clusters/${getClusterName()}/services/YARN/components/RESOURCEMANAGER", 'metrics/yarn/Queue/root')
 		def availableMem = slurper.parseText(response?.metrics?.yarn?.Queue?.root?.AvailableMB as String)
-		
-		availableMem
+		def allocatedMem = slurper.parseText(response?.metrics?.yarn?.Queue?.root?.AllocatedMB as String)
+		int usedMem = Integer.valueOf(allocatedMem);
+		int totalMem = Integer.valueOf(availableMem) + usedMem;
+//		def result =usedMem +"/"+totalMem+"("+100*usedMem/totalMem+"%)";
+		def result = 100*usedMem/totalMem;
+		result
 	  }
 
   def boolean isComponentPresent(def bpMap, def component) {

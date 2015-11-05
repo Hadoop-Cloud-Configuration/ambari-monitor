@@ -1,6 +1,5 @@
 package com.sequenceiq.ambari.scaling.services;
 
-import com.sequenceiq.ambari.client.AmbariClient;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,8 +7,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ClusterService {
-    private AmbariClient ambariClient;
-
     public ClusterService(){
 
     }

@@ -17,14 +17,30 @@
  */
 package com.sequenceiq.ambari.client;
 
+import com.sequenceiq.ambari.scaling.services.ClusterService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
 /**
  * Hello world!
  *
  */
-public class App 
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan(basePackages = "com.sequenceiq.ambari")
+public class App
 {
+
+    @Autowired
+    private ClusterService clusterService;
+
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        ApplicationContext context = SpringApplication.run(App.class, args);
+        
     }
 }

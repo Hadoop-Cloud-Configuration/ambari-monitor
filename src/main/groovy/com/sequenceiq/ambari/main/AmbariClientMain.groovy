@@ -21,7 +21,7 @@ import com.sequenceiq.ambari.client.AmbariClient
 
 class AmbariClientMain {
   public static void main(String[] args) {
-    def host = '54.152.24.207'
+    def host = '54.172.117.195'
     def port = '8080'
     if (args.size == 2) {
       host = args[0]
@@ -35,6 +35,8 @@ class AmbariClientMain {
 //    println "\n  hostsList: \n${client.showHostList()}"
 	String temp = client.showHostDiskInfo();
   	println "\n Hosts Disk Info: \n${temp}"
+	  String t = client.getYarnData();
+	  println "\n Available Memory: \n${t}MB"
    // println "\n  tasksList: \n${client.showTaskList()}"
    // println "\n  serviceList: \n${client.showServiceList()}"
    // println "\n  blueprintList: \n${client.showBlueprints()}"

@@ -39,6 +39,7 @@ trait AlertService extends ClusterService {
   def List<Map<String, String>> getAlertDefinitions() {
     utils.getAllResources('alert_definitions', 'AlertDefinition').items.collect {
       def details = [:]
+	  println "3123123"
       def definition = it.AlertDefinition
       details << ['enabled': definition.enabled]
       details << ['scope': definition.scope]

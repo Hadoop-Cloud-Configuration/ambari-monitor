@@ -17,6 +17,8 @@
  */
 package com.sequenceiq.ambari.client.services
 
+import com.apple.laf.AquaBorder.Default;
+
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import groovyx.net.http.ContentType
@@ -306,11 +308,19 @@ trait ServiceAndHostService extends ClusterService {
    *
    * @return pre-formatted String
    */
-  def String showHostList() {
-    utils.getHosts().items.collect {
-      "$it.Hosts.host_name [$it.Hosts.host_status] $it.Hosts.ip $it.Hosts.os_type:$it.Hosts.os_arch"
-    }.join('\n')
-  }
+	def String showHostList() {
+		utils.getHosts().items.collect { "$it.Hosts.host_name [$it.Hosts.host_status]  $it.Hosts.ip $it.Hosts.os_type:$it.Hosts.os_arch" }.join('\n')
+	}
+	def String showHostDiskInfo() {
+		utils.getHosts().items.collect {
+			String name_alias = it.Hosts.host_name;
+			String ip = it.Hosts.ip;
+			String disk_info_percentage1 = it.Hosts.disk_info.percent[0];
+			String disk_info_percentage2 = it.Hosts.disk_info.percent[1];
+			System.out.println(disk_info_percentage1);
+			"$name_alias $ip $disk_info_percentage1 $disk_info_percentage2"
+		}.join('\n')
+	}
 
   /**
    * Returns the service components properties as Map.

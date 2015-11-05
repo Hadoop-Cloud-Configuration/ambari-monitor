@@ -28,13 +28,17 @@ class AmbariClientMain {
       port = args[1]
     }
 
-    AmbariClient client = new AmbariClient(host, port)
+    AmbariClient client = new AmbariClient(host, port,"admin","admin")
+	
     println "\n  clusterList: \n${client.showClusterList()}"
-    println "\n  hostsList: \n${client.showHostList()}"
-    println "\n  tasksList: \n${client.showTaskList()}"
-    println "\n  serviceList: \n${client.showServiceList()}"
-    println "\n  blueprintList: \n${client.showBlueprints()}"
-    println "\n  clusterBlueprint: \n${client.showClusterBlueprint()}"
+//    println "\n  healthCheck: \n ${client.getHostsMonitor()}"
+//    println "\n  hostsList: \n${client.showHostList()}"
+	String temp = client.showHostDiskInfo();
+  	println "\n Hosts Disk Info: \n${temp}"
+   // println "\n  tasksList: \n${client.showTaskList()}"
+   // println "\n  serviceList: \n${client.showServiceList()}"
+   // println "\n  blueprintList: \n${client.showBlueprints()}"
+   // println "\n  clusterBlueprint: \n${client.showClusterBlueprint()}"
 
   }
 }

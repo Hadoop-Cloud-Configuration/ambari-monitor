@@ -68,6 +68,7 @@ dependencies {
     compile "org.apache.httpcomponents:httpcore:4.3.1"
     compile "org.apache.httpcomponents:httpclient:4.3.1"
     compile "org.bouncycastle:bcpkix-jdk15on:1.51"
+	compile 'com.googlecode.json-simple:json-simple:1.1.1'
 
     testCompile 'org.easymock:easymock:3.2'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'

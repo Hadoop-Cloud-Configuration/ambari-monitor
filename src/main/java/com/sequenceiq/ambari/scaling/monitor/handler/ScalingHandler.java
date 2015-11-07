@@ -2,25 +2,27 @@ package com.sequenceiq.ambari.scaling.monitor.handler;
 
 import com.sequenceiq.ambari.domain.ScalingType;
 import com.sequenceiq.ambari.scaling.monitor.event.ScalingEvent;
-import com.sequenceiq.ambari.scaling.services.ClusterService;
+import com.sequenceiq.ambari.scaling.services.ScalingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by jiang on 15/11/4.
  */
-public class ScaleHandler implements ApplicationListener<ScalingEvent> {
+@Component
+public class ScalingHandler implements ApplicationListener<ScalingEvent> {
 
     @Autowired
-    private ClusterService clusterService;
-
+    private ScalingService scalingService;
 
     @Override
     public void onApplicationEvent(ScalingEvent event) {
+        System.out.println("Event Handled");
         if(event.getScalingType()  == ScalingType.UP_SCALE){
-            clusterService.upscaleCluster();
+            scalingService.upScaleCluster();
         }else{
-            clusterService.downscaleCluster();
+            scalingService.downScaleCluster();
         }
     }
 }

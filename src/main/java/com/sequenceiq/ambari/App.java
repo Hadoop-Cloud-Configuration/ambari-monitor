@@ -15,10 +15,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sequenceiq.ambari.client;
+package com.sequenceiq.ambari;
 
-import com.sequenceiq.ambari.scaling.services.ClusterService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.ApplicationContext;
@@ -34,13 +32,8 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackages = "com.sequenceiq.ambari")
 public class App
 {
-
-    @Autowired
-    private ClusterService clusterService;
-
     public static void main( String[] args )
     {
         ApplicationContext context = SpringApplication.run(App.class, args);
-
     }
 }

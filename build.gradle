@@ -58,6 +58,8 @@ repositories {
 }
 
 dependencies {
+    compile("org.springframework.boot:spring-boot-starter-data-jpa:1.0.2.RELEASE")
+    compile("org.springframework.boot:spring-boot-starter-web:1.0.2.RELEASE")
     compile("org.springframework.boot:spring-boot-actuator:1.0.2.RELEASE")
 	compile 'org.springframework:spring-context-support:4.0.3.RELEASE'
     compile 'org.slf4j:slf4j-api:1.7.7'
@@ -68,9 +70,14 @@ dependencies {
     compile "org.apache.httpcomponents:httpcore:4.3.1"
     compile "org.apache.httpcomponents:httpclient:4.3.1"
     compile "org.bouncycastle:bcpkix-jdk15on:1.51"
+    compile("org.quartz-scheduler:quartz:2.2.1")
+    compile 'mysql:mysql-connector-java:5.1.6'
+    compile 'ma.glasnost.orika:orika-core:1.4.6'
 
     testCompile 'org.easymock:easymock:3.2'
+    testCompile "org.mockito:mockito-all:1.9.5"
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile "org.springframework:spring-test:4.0.2.RELEASE"
 
     deployerJars 'org.springframework.build.aws:org.springframework.build.aws.maven:3.0.0.RELEASE'
 }

@@ -10,8 +10,8 @@ public class AmbariServerConfig {
 	public String AMBARI_SERVER_HOST = "54.172.166.250";
 	public String AMBARI_SERVER_PORT = "8080";
 	public String CLUSTER_NAME = "hadoop";
-	public String NEW_HOST_ADDED = "ip-172-31-59-88.ec2.internal";
-	public String[] hosts = {"ip-172-31-59-88.ec2.internal"};
+	public String NEW_HOST_ADDED = "ip-172-31-55-131.ec2.internal";
+	public String[] hosts = {"ip-172-31-55-131.ec2.internal"};
 	public String fileName = "/home/fred/Dropbox/Saves/pli5.pem";
 	public String baseUrl = "http://" + AMBARI_SERVER_HOST + ":" + AMBARI_SERVER_PORT + "/api/v1";
 	public String agentUrl = baseUrl + "/bootstrap";

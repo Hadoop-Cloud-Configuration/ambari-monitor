@@ -5,11 +5,8 @@ package com.sequenceiq.ambari.server;
   *
   */
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Scanner;
 
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
@@ -21,7 +18,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -33,19 +29,10 @@ public class AmbariServerService {
 	@Autowired
 	private AmbariServerConfig serverConfig = new AmbariServerConfig();
 	
-	public String deployComponetsInHost( String componentName, String hostName) throws ClientProtocolException, IOException {
-		addHostToCluster(hostName);
-		String res1 = ensureAddHostToCluster(hostName);
-		System.out.println("##1: " + res1);
-		String res2 = addComponentToHost(componentName, hostName);
-		System.out.println("##2: " + res2);
-		String res3 = installComponentToHost(componentName, hostName);
-		System.out.println("##3: " + res3);
-		String res4 = startComponentOnHost(componentName, hostName);
-		System.out.println("##4: " + res4);
-		restartNagiosOnHost();
-		
-		return "Done";
+	public String getRegisteredHosts() throws ClientProtocolException, IOException {
+		String url = serverConfig.baseUrl + "/hosts";
+		String result = httpGet(url);
+        return result;
 	}
 	
 	/**
@@ -90,7 +77,6 @@ public class AmbariServerService {
 	 */
 	public String installComponentToHost(String componentName, String hostName) throws ClientProtocolException, IOException {
 		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components/" + componentName;
-//		http://54.172.166.250:8080/api/v1/clusters/hadoop/hosts/ip-172-31-59-88.ec2.internal/host_components/DATANODE
 		HttpClient client = HttpClientBuilder.create().build();
     	HttpPut request =  (HttpPut) httpRequestService("PUT", url);
     	String body = new String("{\"HostRoles\": {\"state\": \"INSTALLED\"}}");

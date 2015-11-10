@@ -12,6 +12,7 @@ import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -29,10 +30,75 @@ public class AmbariServerService {
 	@Autowired
 	private AmbariServerConfig serverConfig = new AmbariServerConfig();
 	
+
+	
 	public String getRegisteredHosts() throws ClientProtocolException, IOException {
 		String url = serverConfig.baseUrl + "/hosts";
 		String result = httpGet(url);
         return result;
+	}
+	
+	/**
+	 * get components from host 
+	 * @param hostName
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public String getHostComponents(String hostName) throws ClientProtocolException, IOException {
+		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components";
+		String result = httpGet(url);
+        return result;
+	}
+	
+	/**
+	 * Stop individual component on Hosts
+	 * @param componentName
+	 * @param hostName
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public String stopComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
+		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components/" + componentName;
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpPut request = (HttpPut) httpRequestService("PUT", url);
+
+    	String delete = new String("{\"RequestInfo\":{\"context\":\"Stop Component\"},\"Body\":{\"HostRoles\":{\"state\":\"INSTALLED\"}}}");
+    	StringEntity entity = new StringEntity(delete);
+    	request.setEntity(entity);
+    	
+        HttpResponse response = client.execute(request);
+        String result = EntityUtils.toString(response.getEntity());
+
+        return result;
+	}
+	
+	/**
+	 * Delete one component from host
+	 * @param componentName
+	 * @param hostName
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public String deleteComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
+		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components/" + componentName;
+		String result = httpDelete(url);
+        return result;
+	}
+	
+	/**
+	 * Delete host from cluster
+	 * @param hostName
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	public String deleteHost(String hostName) throws ClientProtocolException, IOException {
+		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName;
+		String result = httpDelete(url);
+		return result;
 	}
 	
 	/**
@@ -150,6 +216,8 @@ public class AmbariServerService {
 			request = new HttpPost(url);
 		} else if (method.equals("PUT")) {
 			request = new HttpPut(url);
+		} else if (method.equals("DELETE")) {
+			request = new HttpDelete(url);
 		}
 		String authStr = serverConfig.username + ":" + serverConfig.password;
         String authEncoded = Base64.encode(authStr.getBytes());
@@ -159,17 +227,43 @@ public class AmbariServerService {
     	return request;
 	}
 	
+	
+	public String httpPost(String url) throws ClientProtocolException, IOException {
+    	HttpClient client = HttpClientBuilder.create().build();
+    	HttpPost request = (HttpPost) httpRequestService("POST", url);
+        HttpResponse response = client.execute(request);
+        String result = EntityUtils.toString(response.getEntity());
+
+        return result;
+    }
+	
+	public String httpDelete(String url) throws ClientProtocolException, IOException {
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpDelete request = (HttpDelete) httpRequestService("DELETE", url);
+        HttpResponse response = client.execute(request);
+        String result = EntityUtils.toString(response.getEntity());
+
+        return result;
+	}
+	
+    public String httpGet(String url) throws ClientProtocolException, IOException {
+    	HttpClient client = HttpClientBuilder.create().build();
+    	HttpGet request = (HttpGet) httpRequestService("GET", url);
+        HttpResponse response = client.execute(request);
+        String result = EntityUtils.toString(response.getEntity());
+
+        return result;
+    }
+    
 	/** 
-	 * Find bugs
+	 * httpPut template, need specify request body
 	 * @param url
 	 * @return
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public String myHttpPut(String url) throws ClientProtocolException, IOException {
-		System.out.println(url);
+	public String httpPut(String url) throws ClientProtocolException, IOException {
 		HttpClient client = HttpClientBuilder.create().build();
-//    	HttpPut request = new HttpPut(url);
 		HttpPut request = (HttpPut) httpRequestService("PUT", url);
 
 //    	JSONObject injson = new JSONObject();
@@ -180,7 +274,7 @@ public class AmbariServerService {
 //    	
 //    	StringWriter out = new StringWriter();
 //    	outjson.writeJSONString(out);
-//        String jsonText = out.toString();
+//      String jsonText = out.toString();
 //    	StringEntity entity = new StringEntity(jsonText);
 //    	request.setEntity(entity);
     	
@@ -189,60 +283,6 @@ public class AmbariServerService {
     	StringEntity entity = new StringEntity(start);
     	request.setEntity(entity);
     	
-        HttpResponse response = client.execute(request);
-//        System.out.println(response);
-        String result = EntityUtils.toString(response.getEntity());
-        System.out.println(result);
-
-        return "###########";
-    }
-	
-	public String httpPut1(String url) throws ClientProtocolException, IOException {
-		System.out.println(url);
-		HttpClient client = HttpClientBuilder.create().build();
-//    	HttpPut request =  (HttpPut) httpRequestService("PUT", url);
-    	HttpPut request = new HttpPut(url);
-    	String authStr = serverConfig.username + ":" + serverConfig.password;
-        String authEncoded = Base64.encode(authStr.getBytes());
-    	request.addHeader("Authorization", "Basic " + authEncoded);
-    	request.addHeader("X-Requested-By", "ambari");
-    	request.addHeader("Content-Type", "application/json");
-//    	String body = new String("{\"HostRoles\": {\"state\": \"INSTALLED\"}}");
-//    	String start = new String("{\"HostRoles\": {\"state\": \"STARTED\"}}");
-//    	String start = new String("{\"HostRoles\": {\"state\": \"STARTED\"}}");
-    	
-    	
-    	JSONObject injson = new JSONObject();
-    	injson.put("state", "STARTED");
-    	JSONObject outjson = new JSONObject();
-    	outjson.put("HostRoles", injson);
-    
-    	
-    	StringWriter out = new StringWriter();
-    	outjson.writeJSONString(out);
-        String jsonText = out.toString();
-    	StringEntity entity = new StringEntity(jsonText);
-    	request.setEntity(entity);
-    	
-        HttpResponse response = client.execute(request);
-        System.out.println(response);
-//        String result = EntityUtils.toString(response.getEntity());
-
-        return "###########";
-    }
-	
-	private String httpPost(String url) throws ClientProtocolException, IOException {
-    	HttpClient client = HttpClientBuilder.create().build();
-    	HttpPost request = (HttpPost) httpRequestService("POST", url);
-        HttpResponse response = client.execute(request);
-        String result = EntityUtils.toString(response.getEntity());
-
-        return result;
-    }
-	
-    public String httpGet(String url) throws ClientProtocolException, IOException {
-    	HttpClient client = HttpClientBuilder.create().build();
-    	HttpGet request = (HttpGet) httpRequestService("GET", url);
         HttpResponse response = client.execute(request);
         String result = EntityUtils.toString(response.getEntity());
 

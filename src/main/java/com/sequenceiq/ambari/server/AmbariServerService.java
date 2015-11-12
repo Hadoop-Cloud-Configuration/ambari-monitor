@@ -59,7 +59,7 @@ public class AmbariServerService {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public String stopComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
+	public int stopComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
 		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components/" + componentName;
 		HttpClient client = HttpClientBuilder.create().build();
 		HttpPut request = (HttpPut) httpRequestService("PUT", url);
@@ -69,9 +69,10 @@ public class AmbariServerService {
     	request.setEntity(entity);
     	
         HttpResponse response = client.execute(request);
-        String result = EntityUtils.toString(response.getEntity());
+        int code = response.getStatusLine().getStatusCode();
+//        String result = EntityUtils.toString(response.getEntity());
 
-        return result;
+        return code;
 	}
 	
 	/**
@@ -82,10 +83,14 @@ public class AmbariServerService {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public String deleteComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
+	public int deleteComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
 		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components/" + componentName;
-		String result = httpDelete(url);
-        return result;
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpDelete request = (HttpDelete) httpRequestService("DELETE", url);
+        HttpResponse response = client.execute(request);
+        int code = response.getStatusLine().getStatusCode();
+        
+        return code;
 	}
 	
 	/**
@@ -95,10 +100,14 @@ public class AmbariServerService {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public String deleteHost(String hostName) throws ClientProtocolException, IOException {
+	public int deleteHost(String hostName) throws ClientProtocolException, IOException {
 		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName;
-		String result = httpDelete(url);
-		return result;
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpDelete request = (HttpDelete) httpRequestService("DELETE", url);
+        HttpResponse response = client.execute(request);
+        int code = response.getStatusLine().getStatusCode();
+        
+		return code;
 	}
 	
 	/**
@@ -162,7 +171,7 @@ public class AmbariServerService {
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public String startComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
+	public int startComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
 		String url = serverConfig.baseUrl + "/clusters/" + serverConfig.CLUSTER_NAME + "/hosts/" + hostName + "/host_components/" + componentName;
 		
 		HttpClient client = HttpClientBuilder.create().build();
@@ -170,10 +179,11 @@ public class AmbariServerService {
     	String body = new String("{\"HostRoles\": {\"state\": \"STARTED\"}}");
     	StringEntity entity = new StringEntity(body);
     	request.setEntity(entity);
+    	
         HttpResponse response = client.execute(request);
+        int code = response.getStatusLine().getStatusCode();
         
-        String result = EntityUtils.toString(response.getEntity());
-        return result;
+        return code;
     }
 	
 	/**

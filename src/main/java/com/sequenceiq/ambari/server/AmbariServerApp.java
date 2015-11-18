@@ -1,33 +1,28 @@
 package com.sequenceiq.ambari.server;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.ClientProtocolException;
 
 public class AmbariServerApp {
-	AmbariServerConfig serverConfig = new AmbariServerConfig();
+	static AmbariServerConfig serverConfig = new AmbariServerConfig();
 	AmbariServerService ambServer = new AmbariServerService();
-	AmbariAgentService ambAgent = new AmbariAgentService();
+	static AmbariAgentService ambAgent = new AmbariAgentService();
+	static AWSService awsService = new AWSService();
 	
 	public static void main(String[] args) throws ClientProtocolException, IOException {
-		AmbariServerConfig serverConfig = new AmbariServerConfig();
-		AmbariServerService ambServer = new AmbariServerService();
-		AmbariAgentService ambAgent = new AmbariAgentService();
 		AmbariServerApp demo = new AmbariServerApp();
-		String hostName = serverConfig.NEW_HOST_ADDED;
-		String[] componentNames = {"DATANODE", "NODEMANAGER"};  // NODEMANAGER, DATANODE, METRICS_MONITOR 
+		String hostName = serverConfig.NEW_HOST;
+		String[] componentNames = serverConfig.componentNames;  // NODEMANAGER, DATANODE, METRICS_MONITOR 
 		
-		int flag = 4; // switch process
+		int flag = 2; // switch process
 		// start EC2 instance
 		if (flag == 0) {
-//			serverConfig.NEW_HOST_ADDED = demo.getHostName(serverConfig.createCommand);
-//			serverConfig.hosts[0] = serverConfig.NEW_HOST_ADDED;
-//			System.out.println(serverConfig.NEW_HOST_ADDED);
-			demo.operateInstance("stop", "i-82ab733c");
+			serverConfig.NEW_HOST = awsService.getHostName(serverConfig.createCommand);
+//			serverConfig.hosts[0] = serverConfig.NEW_HOST;
+//			System.out.println(serverConfig.NEW_HOST);
+//			demo.operateInstance("start", "i-82ab733c");
 		}
 //		demo.sleep(20);
 		if (flag == 1) {
@@ -37,7 +32,7 @@ public class AmbariServerApp {
 //			System.out.println(res0);
 		}
 		if (flag == 2) {
-			demo.startHostService(componentNames, hostName);
+			demo.addHostService(componentNames, hostName);
 		}
 		if (flag == 3) {
 			demo.stopHostService(componentNames, hostName);
@@ -53,64 +48,13 @@ public class AmbariServerApp {
 	}
 	
 	/**
-	 * Start and Stop EC2 instance
-	 * @param method
-	 * @param instanceId
-	 */
-	public void operateInstance(String method, String instanceId) {
-        Process proc;
-        String command = "./aws_linux " + method +" -instance " + instanceId;
-        try {
-			proc = Runtime.getRuntime().exec(command);
-			proc.waitFor();
-	        System.out.println ("exit: " + proc.exitValue());
-	        proc.destroy();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Get hostname from AWS
-	 * @param command
-	 * @return
-	 */
-	public String getHostName(String command) {
-		String res;
-        Process proc;
-        String hostName = "";
-        try {
-//          proc = Runtime.getRuntime().exec("ls -aF"); // aws_linux stop -instance i-f270a94c
-        	proc = Runtime.getRuntime().exec(command); //aws_linux create -key pli5
-            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-            while ((res = br.readLine()) != null) {
-            	res = br.readLine();
-            	if (res.contains("PrivateDnsName")) {
-            		String[] str = res.split("\"");
-            		hostName = str[1];
-            		System.out.println("hostName: " + str[1]);
-            		break;
-            	}
-            }
-            proc.waitFor();
-            System.out.println ("exit: " + proc.exitValue());
-            proc.destroy();
-        } catch (Exception e) {}
-        
-        return hostName;
-	}
-	
-	/**
-	 * Start host service
+	 * add host service scale out hadoop cluster
 	 * @param componentNames
 	 * @param hostName
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
-	public void startHostService(String[] componentNames, String hostName) throws ClientProtocolException, IOException {
+	public void addHostService(String[] componentNames, String hostName) throws ClientProtocolException, IOException {
 		// install components on host
 		for (String component: componentNames) {
 			installComponentOnHost(component, hostName);
@@ -120,6 +64,14 @@ public class AmbariServerApp {
 		System.out.println("Start Host Successful.");
 	}
 	
+	/**
+	 * Install components on Host
+	 * @param componentName
+	 * @param hostName
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public int installComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
 		ambServer.getRegisteredHosts();
 		
@@ -136,6 +88,14 @@ public class AmbariServerApp {
 		return 0;
 	}
 	
+	/**
+	 * Start Component Services on Host
+	 * @param componentName
+	 * @param hostName
+	 * @return
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	public int startComponentOnHost(String componentName, String hostName) throws ClientProtocolException, IOException {
 		int code = ambServer.startComponentOnHost(componentName, hostName);
 		while (code != 202) {
@@ -150,7 +110,7 @@ public class AmbariServerApp {
 	}
 	
 	/**
-	 * Stop host service
+	 * Stop host services, remove components and host from cluster
 	 * @param componentNames
 	 * @param hostName
 	 * @throws ClientProtocolException

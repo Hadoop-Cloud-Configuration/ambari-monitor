@@ -7,7 +7,7 @@ import org.apache.http.client.ClientProtocolException;
 
 public class AmbariServerApp {
 	static AmbariServerConfig serverConfig = new AmbariServerConfig();
-	AmbariServerService ambServer = new AmbariServerService();
+	static AmbariServerService ambServer = new AmbariServerService();
 	static AmbariAgentService ambAgent = new AmbariAgentService();
 	static AWSService awsService = new AWSService();
 	

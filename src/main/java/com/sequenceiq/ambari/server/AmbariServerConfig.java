@@ -18,5 +18,4 @@ public class AmbariServerConfig {
 	public String baseUrl = "http://" + AMBARI_SERVER_HOST + ":" + AMBARI_SERVER_PORT + "/api/v1";
 	public String agentUrl = baseUrl + "/bootstrap";
 	public String createCommand = "./aws_linux create -key pli5 -id ami-02dc4c6b";
-//	RESTClient ambri = new AmbariClient(AMBARI_SERVER_HOST, "8080", "admin", "admin");
 }

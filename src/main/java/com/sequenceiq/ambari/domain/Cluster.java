@@ -1,16 +1,19 @@
 package com.sequenceiq.ambari.domain;
 
 
-import com.sequenceiq.ambari.repository.ClusterState;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jiang on 15/11/4.
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Cluster.findByState", query = "SELECT c FROM Cluster c WHERE c.state= :state")
+        @NamedQuery(name = "Cluster.findByState", query = "SELECT c FROM Cluster c WHERE c.state= :state"),
+        @NamedQuery(name = "Cluster.findOne", query = "SELECT c FROM Cluster c WHERE c.id= :id")
 })
 public class Cluster {
     private final static int MAX_SIZE =100;
@@ -23,12 +26,22 @@ public class Cluster {
     @Enumerated(EnumType.STRING)
     private ClusterState state = ClusterState.RUNNING;
 
-    private String host;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private Ambari ambari;
 
-    private String port;
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MetricsAlert> metricsAlerts = new ArrayList<>();
 
     public Cluster(){
 
+    }
+
+    public Cluster(Ambari ambari){
+        this.ambari = ambari;
+    }
+
+    public void addMetricsAlert(MetricsAlert alert){
+        this.metricsAlerts.add(alert);
     }
 
     public long getId(){
@@ -49,18 +62,20 @@ public class Cluster {
 
 
     public String getHost() {
-        return host;
+        return ambari.getHost();
     }
 
-    public void setHost(String host) {
-        this.host = host;
+    public String getAmbariUser(){
+        return ambari.getUser();
     }
 
-    public String getPort() {
-        return port;
+    public String getAmbariPss(){
+        return ambari.getPass();
     }
 
-    public void setPort(String port) {
-        this.port = port;
+    public String getPort(){
+        return ambari.getPort();
     }
+
+
 }

@@ -1,11 +1,19 @@
 package com.sequenceiq.ambari.scaling.monitor.excutor;
 
+import com.sequenceiq.ambari.client.AmbariClient;
+import com.sequenceiq.ambari.factory.AmbariClientFactory;
+import com.sequenceiq.ambari.repository.MetricsAlertRepository;
+import com.sequenceiq.ambari.services.ClusterService;
+import com.sequenceiq.ambari.domain.Cluster;
+import com.sequenceiq.ambari.domain.MetricsAlert;
 import com.sequenceiq.ambari.domain.ScalingType;
 import com.sequenceiq.ambari.scaling.monitor.event.AbstractEventPublisher;
 import com.sequenceiq.ambari.scaling.monitor.event.ScalingEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,15 +23,46 @@ import java.util.Map;
 @Scope("prototype")
 public class MetricsMonitorExcutor extends AbstractEventPublisher implements MonitorExcutor {
 
+    private final String ALERT_STATE="state";
+    private final String ALERT_LAST_STATE_CHANGED="timestamp";
+    private final long MIN_IN_MS = 1000*60;
     private long cluster_id;
+    @Autowired
+    private ClusterService clusterService;
+    @Autowired
+    private MetricsAlertRepository metricsAlertRepository;
     @Override
     public void run() {
-        if(true){
-            publishEvent(new ScalingEvent(ScalingType.UP_SCALE));
-        }else{
-            publishEvent(new ScalingEvent(ScalingType.DOWN_SCALE));
+        Cluster cluster  = clusterService.findOne(cluster_id);
+        AmbariClient client = AmbariClientFactory.createAmbariClient(cluster);
+
+        for(MetricsAlert alert : metricsAlertRepository.findAllByCluster(cluster_id) ){
+            List<Map<String, Object>> alertHistory = client.getAlertHistory(alert.getDefinitionName(), 1);
+            int historySize = alertHistory.size();
+            if(!alertHistory.isEmpty()){
+                Map<String, Object> history = alertHistory.get(0);
+                boolean isRequiredState = isStateSame((String)history.get(ALERT_STATE), alert);
+                if(isRequiredState){
+                    long interval = getStateDuration(history);
+                    if(isDurationMet(interval, alert) ){
+                        publishEvent(new ScalingEvent(ScalingType.UP_SCALE));
+                    }
+                }
+            }
         }
     }
+
+    private boolean isStateSame(String current, MetricsAlert alert){
+        return current.equals(alert.getAlertState().getValue());
+    }
+
+    private boolean isDurationMet(Long current, MetricsAlert alert){
+        return current > alert.getTimeDefinition()* MIN_IN_MS;
+    }
+    private Long getStateDuration(Map<String, Object> history ){
+        return System.currentTimeMillis() - (Long)history.get(ALERT_LAST_STATE_CHANGED);
+    }
+
 
     @Override
     public void setContext(Map<String, Object> context) {

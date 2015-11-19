@@ -30,7 +30,7 @@ public class KeystoreUtils {
     keyStore.load(null);
 
     Certificate[] cert = [privateCertificate]
-    keyStore.setKeyEntry('client', keyPair.getPrivate(), 'consul'.toCharArray(), cert);
+    keyStore.setKeyEntry('factory', keyPair.getPrivate(), 'consul'.toCharArray(), cert);
     return keyStore;
   }
 

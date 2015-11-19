@@ -24,7 +24,6 @@ public abstract class AbstractMonitor implements Monitor{
         applicationContext = (ApplicationContext) map.get(MonitorContext.APPLICATION_CONTEXT.name());
         executorService = applicationContext.getBean(ExecutorService.class);
         clusterService = applicationContext.getBean(ClusterService.class);
-
         for( Cluster cluster : clusterService.findActiveCluster()){
             MonitorExcutor monitorExecutor = applicationContext.getBean(getMonitorType().getSimpleName(), MonitorExcutor.class);
             monitorExecutor.setContext(getContext(cluster));

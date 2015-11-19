@@ -15,26 +15,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sequenceiq.ambari.client.services
+package com.sequenceiq.ambari.factory
 
+import com.sequenceiq.ambari.client.AmbariClient
+import com.sequenceiq.ambari.client.AmbariClientUtils
 import groovy.util.logging.Slf4j
+import spock.lang.Specification
 
 @Slf4j
-trait MonitorService extends ClusterService {
+abstract class AbstractAmbariClientTest extends Specification {
 
-	def List<Map<String, String>> getHostsMonitor() {
-		utils.getAllResources('hosts/ip-172-31-35-79.ec2.internal', '').items.collect {
-			def details = [:]
-			def definition = it
-			println "1321312312"
-			//      details << ['enabled': definition.enabled]
-			//      details << ['scope': definition.scope]
-			//      details << ['interval': definition.interval as String]
-			//      details << ['description': definition.description]
-			//      details << ['name': definition.name]
-			//      details << ['label': definition.label]
-			//      details << ['service_name': definition.service_name]
-			details
-		}
-	}
+  protected AmbariClient ambari
+
+  def setup() {
+    ambari = Spy(AmbariClient)
+    ambari.utils = Spy(AmbariClientUtils, constructorArgs: [ambari])
+  }
+
+  // implement this in descendants!
+  abstract protected selectResponseJson(Map resourceRequestMap, String scenarioStr);
+
+  def protected mockResponses(String scenarioStr) {
+    ambari.utils.getRawResource(_) >> { Map resourceRequestMap ->
+      String jsonFileName = selectResponseJson(resourceRequestMap, scenarioStr)
+      String jsonAsText = getClass().getClassLoader().getResourceAsStream(jsonFileName)?.text
+      return jsonAsText;
+    }
+  }
 }

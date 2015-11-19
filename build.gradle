@@ -62,6 +62,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.0.2.RELEASE")
     compile("org.springframework.boot:spring-boot-actuator:1.0.2.RELEASE")
 	compile 'org.springframework:spring-context-support:4.0.3.RELEASE'
+    compile "org.freemarker:freemarker:2.3.20"
     compile 'org.slf4j:slf4j-api:1.7.7'
     compile 'org.slf4j:slf4j-log4j12:1.7.7'
     compile 'org.codehaus.groovy:groovy-all:2.4.4'

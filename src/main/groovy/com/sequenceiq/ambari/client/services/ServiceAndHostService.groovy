@@ -17,8 +17,6 @@
  */
 package com.sequenceiq.ambari.client.services
 
-import com.apple.laf.AquaBorder.Default;
-
 import groovy.json.JsonBuilder
 import groovy.util.logging.Slf4j
 import groovyx.net.http.ContentType

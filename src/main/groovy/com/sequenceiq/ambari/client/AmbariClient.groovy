@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package com.sequenceiq.ambari.client
+
 import com.sequenceiq.ambari.client.services.AlertService
 import com.sequenceiq.ambari.client.services.BlueprintService
 import com.sequenceiq.ambari.client.services.ConfigService
@@ -39,7 +40,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 
 import javax.net.ssl.SSLContext
 /**
- * Basic client to send requests to the Ambari server.
+ * Basic factory to send requests to the Ambari server.
  */
 @Slf4j
 class AmbariClient implements AlertService,MonitorService, BlueprintService, ConfigService, HBaseService, ServiceAndHostService, KerberosService, StackService, TaskService, UserService, ViewService {
@@ -55,8 +56,8 @@ class AmbariClient implements AlertService,MonitorService, BlueprintService, Con
    * @param port port of the Ambari server; default value is 8080
    * @param user username of the Ambari server; default is admin
    * @param password password fom the Ambari server; default is admin
-   * @param clientCertPath client certificate path, used in 2-way-ssl
-   * @param clientKeyPath client key path, used in 2-way-ssl
+   * @param clientCertPath factory certificate path, used in 2-way-ssl
+   * @param clientKeyPath factory key path, used in 2-way-ssl
    * @param serverCertPath server certificate path, used in 2-way-ssl
    */
   AmbariClient(String host = 'localhost', String port = '8080', String user = 'admin', String password = 'admin',
@@ -82,7 +83,7 @@ class AmbariClient implements AlertService,MonitorService, BlueprintService, Con
   /**
    * Connects to the ambari server.
    *
-   * @param restClient underlying client
+   * @param restClient underlying factory
    * @param slurper slurper to parse responses
    */
   AmbariClient(RESTClient restClient, JsonSlurper slurper) {

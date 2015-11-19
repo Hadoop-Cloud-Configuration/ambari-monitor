@@ -88,7 +88,7 @@ trait BlueprintService extends ClusterService {
     if (resp) {
       def groups = resp.host_groups.collect {
         def name = it.name
-        def comps = it.components.collect { it.name.padRight(PAD).padLeft(PAD + 10) }.join('\n')
+        def comps = it.components.collect { it.name.padRight(CommonService.PAD).padLeft(CommonService.PAD + 10) }.join('\n')
         return "HOSTGROUP: $name\n$comps"
       }.join('\n')
       return "[${resp.Blueprints.stack_name}:${resp.Blueprints.stack_version}]\n$groups"
@@ -114,7 +114,7 @@ trait BlueprintService extends ClusterService {
    */
   def String showBlueprints() {
     utils.getBlueprints().items.collect {
-      "${it.Blueprints.blueprint_name.padRight(PAD)} [${it.Blueprints.stack_name}:${it.Blueprints.stack_version}]"
+      "${it.Blueprints.blueprint_name.padRight(CommonService.PAD)} [${it.Blueprints.stack_name}:${it.Blueprints.stack_version}]"
     }.join('\n')
   }
 

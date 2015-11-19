@@ -1,5 +1,6 @@
 package com.sequenceiq.ambari.config;
 
+import freemarker.template.TemplateException;
 import org.quartz.simpl.SimpleJobFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
+import java.io.IOException;
 import java.util.concurrent.Executor;
 
 /**
@@ -56,5 +59,14 @@ public class AppConfig implements AsyncConfigurer{
             LOGGER.error(Logger.ROOT_LOGGER_NAME, "Error creating task executor.", e);
         }
         return null;
+    }
+
+    @Bean
+    public freemarker.template.Configuration freemarkerConfiguration() throws IOException, TemplateException {
+        FreeMarkerConfigurationFactoryBean factoryBean = new FreeMarkerConfigurationFactoryBean();
+        factoryBean.setPreferFileSystemAccess(false);
+        factoryBean.setTemplateLoaderPath("classpath:/");
+        factoryBean.afterPropertiesSet();
+        return factoryBean.getObject();
     }
 }

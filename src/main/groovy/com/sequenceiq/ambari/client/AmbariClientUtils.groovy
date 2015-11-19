@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 package com.sequenceiq.ambari.client
+
 import com.sequenceiq.ambari.client.services.CommonService
 import groovy.text.SimpleTemplateEngine
 import groovy.util.logging.Slf4j

@@ -1,6 +1,7 @@
 package com.sequenceiq.ambari.factory;
 
 import com.sequenceiq.ambari.domain.Instance;
+import com.sequenceiq.ambari.domain.InstanceState;
 import org.springframework.stereotype.Component;
 
 /**
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class InstanceFactory {
-    public Instance createInstance(String ip){
-        return new Instance(ip);
+    public Instance createInstance(String ip, InstanceState state){
+        return new Instance(ip,state);
     }
 }

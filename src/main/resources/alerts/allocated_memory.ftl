@@ -7,14 +7,14 @@
     "ignore_host": false,
     "interval": 5,
     "label": "Allocated memory",
-    "name": "allocated_memory",
+    "name": "allocate_memory",
     "scope": "ANY",
     "service_name": "YARN",
     "source": {
       "jmx": {
         "property_list": [
-          "Hadoop:service=ResourceManager,name=QueueMetrics,q0=root/AvailableMB",
-          "Hadoop:service=ResourceManager,name=QueueMetrics,q0=root/AllocatedMB"
+          "Hadoop:service=ResourceManager,name=QueueMetrics,q0=root/AllocatedMB",
+          "Hadoop:service=ResourceManager,name=QueueMetrics,q0=root/AvailableMB"
         ],
         "value": "{0}/({0} + {1}) * 100"
       },

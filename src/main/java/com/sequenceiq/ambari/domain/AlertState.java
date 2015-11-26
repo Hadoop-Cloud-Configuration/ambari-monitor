@@ -6,7 +6,8 @@ package com.sequenceiq.ambari.domain;
 public enum  AlertState {
     OK("OK"),
     WARN("WARNING"),
-    CRITICAL("CRITICAL");
+    CRITICAL("CRITICAL"),
+    UNKNOWN("UNKNOWN");
 
     private String value;
 

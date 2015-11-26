@@ -4,40 +4,15 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.client.ClientProtocolException;
+import org.springframework.stereotype.Component;
 
-public class AmbariServerApp {
+@Component
+public class ScalingService {
 	static AmbariServerConfig serverConfig = new AmbariServerConfig();
 	static AmbariServerService ambServer = new AmbariServerService();
 	static AmbariAgentService ambAgent = new AmbariAgentService();
 	static AWSService awsService = new AWSService();
-	
-	public static void main(String[] args) throws ClientProtocolException, IOException {
-		AmbariServerApp demo = new AmbariServerApp();
-		String hostName = serverConfig.NEW_HOST;
-		String[] componentNames = serverConfig.componentNames;  // NODEMANAGER, DATANODE, METRICS_MONITOR 
-		
-		int flag = 2; // switch process
-		// start EC2 instance
-		if (flag == 0) {
-			serverConfig.NEW_HOST = awsService.getHostName(serverConfig.createCommand);
-//			serverConfig.hosts[0] = serverConfig.NEW_HOST;
-//			System.out.println(serverConfig.NEW_HOST);
-//			demo.operateInstance("start", "i-82ab733c");
-		}
-//		demo.sleep(20);
-		if (flag == 1) {
-			String agentRes = ambAgent.installAmbAgent(serverConfig.hosts, serverConfig.agentUrl, serverConfig.fileName);
-			System.out.println(agentRes);
-//			String res0 = ambServer.httpGet(serverConfig.agentUrl + "/4");
-//			System.out.println(res0);
-		}
-		if (flag == 2) {
-			demo.addHostService(componentNames, hostName);
-		}
-		if (flag == 3) {
-			demo.stopHostService(componentNames, hostName);
-		}
-	}
+
 	
 	public void sleep(int second) {
 		try {
@@ -172,4 +147,7 @@ public class AmbariServerApp {
 		}
 		return code;
 	}
+
+
+
 }

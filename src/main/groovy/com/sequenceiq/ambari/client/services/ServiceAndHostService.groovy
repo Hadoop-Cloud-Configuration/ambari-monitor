@@ -141,14 +141,29 @@ trait ServiceAndHostService extends ClusterService {
     deleteHost(hostName)
 
     // restart zookeper
-    def id = restartServiceComponents('ZOOKEEPER', ['ZOOKEEPER_SERVER'])
-    waitForRequestsToFinish([id])
+    def id
+    if(components.contains("ZOOKEEPER_SERVER")){
+      id = restartServiceComponents('ZOOKEEPER', ['ZOOKEEPER_SERVER'])
+      waitForRequestsToFinish([id])
+    }
+
 
     // restart nagios
     if (getServiceComponentsMap().containsKey('NAGIOS')) {
       id = restartServiceComponents('NAGIOS', ['NAGIOS_SERVER'])
       waitForRequestsToFinish([id])
     }
+  }
+
+  /**
+   * Restart the HDFS and YARN
+   */
+  def restartHadoop(){
+    def id = restartServiceComponents('HDFS', ['NAMENODE'])
+    waitForRequestsToFinish([id])
+
+    id = restartServiceComponents('YARN', ['RESOURCEMANAGER'])
+    waitForRequestsToFinish([id])
   }
 
   /**
@@ -233,19 +248,21 @@ trait ServiceAndHostService extends ClusterService {
     result
   }
 
-  private def Map<String, Integer> setComponentsState(String hostName, List<String> components, String state)
+  def Map<String, Integer> setComponentsState(String hostName, List<String> components, String state)
           throws HttpResponseException {
     def resp = [:]
-    components.each {
+    for( String it : components){
       def id = setComponentState(hostName, it, state)
       if (id) {
         resp << [(it): id]
       }
     }
+
+
     return resp
   }
 
-  private def setComponentState(String hostName, String component, String state) {
+  def setComponentState(String hostName, String component, String state) {
     if (debugEnabled) {
       println "[DEBUG] PUT ${ambari.getUri()}clusters/${getClusterName()}/hosts/$hostName/host_components/$component"
     }

@@ -1,6 +1,7 @@
 package com.sequenceiq.ambari.web.json;
 
 import com.sequenceiq.ambari.domain.AlertState;
+import com.sequenceiq.ambari.domain.ScalingType;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,6 +13,19 @@ public class MetricsAlertJson extends  AbstractAlertJson {
     private String alertDefinition;
     private int time;
     private AlertState alertState;
+    private ScalingType scalingPolicy;
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public ScalingType getScalingPolicy() {
+        return scalingPolicy;
+    }
+
+    public void setScalingPolicy(ScalingType scalingPolicy) {
+        this.scalingPolicy = scalingPolicy;
+    }
 
     public String getAlertDefinition() {
         return alertDefinition;

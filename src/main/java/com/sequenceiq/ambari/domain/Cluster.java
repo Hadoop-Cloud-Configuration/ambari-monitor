@@ -1,8 +1,6 @@
 package com.sequenceiq.ambari.domain;
 
 
-import org.apache.commons.lang.StringUtils;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +14,9 @@ import java.util.List;
         @NamedQuery(name = "Cluster.findOne", query = "SELECT c FROM Cluster c WHERE c.id= :id")
 })
 public class Cluster {
-    private final static int MAX_SIZE =100;
-    private final static int MIN_SIZE = 3;
+    public final static int MAX_SIZE =100;
+    public final static int MIN_SIZE = 2;
+    private final static int DEFAULT_OPERATION_INTERVAL = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,6 +30,12 @@ public class Cluster {
 
     @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MetricsAlert> metricsAlerts = new ArrayList<>();
+    @OneToMany(mappedBy = "cluster", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Instance> instances = new ArrayList<>();
+    @Column(name="operation_interval")
+    private int operationInterval = DEFAULT_OPERATION_INTERVAL;
+    @Column(name="latest_scaling_activity")
+    private long latestScalingActivity;
 
     public Cluster(){
 
@@ -42,6 +47,14 @@ public class Cluster {
 
     public void addMetricsAlert(MetricsAlert alert){
         this.metricsAlerts.add(alert);
+    }
+
+    public void addInstance(Instance instance){
+        this.instances.add(instance);
+    }
+
+    public void addInstanceList(List<Instance> instances){
+        this.instances.addAll(instances);
     }
 
     public long getId(){
@@ -78,4 +91,19 @@ public class Cluster {
     }
 
 
+    public int getOperationInterval() {
+        return operationInterval;
+    }
+
+    public void setOperationInterval(int interval ){
+        this.operationInterval = interval;
+    }
+
+    public long getLatestScalingActivity() {
+        return latestScalingActivity;
+    }
+
+    public void setLatestScalingActivity() {
+        this.latestScalingActivity = System.currentTimeMillis();
+    }
 }

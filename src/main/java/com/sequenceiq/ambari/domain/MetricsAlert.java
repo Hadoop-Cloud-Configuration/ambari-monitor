@@ -13,7 +13,7 @@ import javax.persistence.*;
         @NamedQuery(name="MetricsAlert.findByCluster",  query="SELECT c FROM MetricsAlert c WHERE c.cluster.id= :clusterId  AND id= :alertId")
 
 })
-public class MetricsAlert extends Alert {
+public class MetricsAlert implements Alert {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,8 +32,18 @@ public class MetricsAlert extends Alert {
     private String definitionName;
     @Column(name="time_definition")
     private int timeDefinition;
+    @Column(name="scaling_policy")
+    private ScalingType scalingPolicy;
 
     public MetricsAlert() {
+    }
+
+    public ScalingType getScalingPolicy() {
+        return scalingPolicy;
+    }
+
+    public void setScalingPolicy(ScalingType scalingPolicy) {
+        this.scalingPolicy = scalingPolicy;
     }
 
     public Long getId() {

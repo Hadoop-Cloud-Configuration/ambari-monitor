@@ -7,13 +7,16 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Instance.findByState", query = "SELECT c FROM Instance c WHERE c.state= :state"),
+        @NamedQuery(name = "Instance.findNByState", query = "SELECT c FROM Instance c WHERE c.state= :state and cluster_id= :clusterId"),
         @NamedQuery(name = "Instance.findOne", query = "SELECT c FROM Instance c WHERE c.id= :id")
 })
 public class Instance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
+    @ManyToOne
+    private Cluster cluster;
 
     private String privateIP;
 
@@ -24,9 +27,9 @@ public class Instance {
 
     }
 
-    public Instance(String ip){
+    public Instance(String ip, InstanceState state){
         this.privateIP = ip;
-        this.state = InstanceState.RUNNING;
+        this.state = state;
     }
 
     public InstanceState getState() {
@@ -53,6 +56,11 @@ public class Instance {
         this.id = id;
     }
 
+    public Cluster getCluster() {
+        return cluster;
+    }
 
-
+    public void setCluster(Cluster cluster) {
+        this.cluster = cluster;
+    }
 }

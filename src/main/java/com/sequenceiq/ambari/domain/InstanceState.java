@@ -6,5 +6,6 @@ package com.sequenceiq.ambari.domain;
 public enum  InstanceState {
     RUNNING,
     TERMINATED,
-    STOPPED
+    STOPPED,
+    STARTED,
 }

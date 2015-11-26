@@ -9,6 +9,8 @@ import com.sequenceiq.ambari.domain.MetricsAlert;
 import com.sequenceiq.ambari.domain.ScalingType;
 import com.sequenceiq.ambari.scaling.monitor.event.AbstractEventPublisher;
 import com.sequenceiq.ambari.scaling.monitor.event.ScalingEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,8 @@ import java.util.Map;
 @Component("MetricsMonitorExcutor")
 @Scope("prototype")
 public class MetricsMonitorExcutor extends AbstractEventPublisher implements MonitorExcutor {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MetricsMonitorExcutor.class);
 
     private final String ALERT_STATE="state";
     private final String ALERT_LAST_STATE_CHANGED="timestamp";
@@ -45,7 +49,8 @@ public class MetricsMonitorExcutor extends AbstractEventPublisher implements Mon
                 if(isRequiredState){
                     long interval = getStateDuration(history);
                     if(isDurationMet(interval, alert) ){
-                        publishEvent(new ScalingEvent(ScalingType.UP_SCALE));
+                        LOGGER.info("Metircs Monitor trigger a scaling event on {} when {} is {} for more than {} minutes", cluster.getHost() , alert.getDefinitionName() ,alert.getAlertState(),alert.getTimeDefinition());
+                        publishEvent(new ScalingEvent(alert));
                     }
                 }
             }

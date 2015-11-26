@@ -12,7 +12,6 @@ public abstract class AbstractEventPublisher implements EventPublisher {
 
     @Override
     public void publishEvent(ApplicationEvent event) {
-        System.out.println("EVENT PUBISHED");
         this.eventPublisher.publishEvent(event);
     }
 

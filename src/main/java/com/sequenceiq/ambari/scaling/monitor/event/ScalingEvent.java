@@ -1,5 +1,6 @@
 package com.sequenceiq.ambari.scaling.monitor.event;
 
+import com.sequenceiq.ambari.domain.Alert;
 import com.sequenceiq.ambari.domain.ScalingType;
 import org.springframework.context.ApplicationEvent;
 
@@ -8,14 +9,18 @@ import org.springframework.context.ApplicationEvent;
  */
 public class ScalingEvent extends ApplicationEvent {
 
-    private ScalingType scalingType;
+    private Alert alert;
 
-    public ScalingEvent(ScalingType scalingType){
-        super(scalingType);
-        this.scalingType =  scalingType;
+    public ScalingEvent(Alert alert){
+        super(alert);
+        this.alert =  alert;
     }
 
     public ScalingType getScalingType(){
-        return this.scalingType;
+        return this.alert.getScalingPolicy();
+    }
+
+    public Alert getAlert(){
+        return this.alert;
     }
 }

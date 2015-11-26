@@ -7,4 +7,5 @@ public enum ClusterState {
     INITIALIZING,
     RUNNING,
     TERMINATED,
+    STOPED, UPDATING;
 }

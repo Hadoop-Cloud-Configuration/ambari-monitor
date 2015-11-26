@@ -43,11 +43,5 @@ public class ClusterService {
 
     public Cluster findOne(Long id){ return clusterRepository.findOne(id); }
 
-    public void upscaleCluster(){
 
-    }
-
-    public void downscaleCluster(){
-
-    }
 }
